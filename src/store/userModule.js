@@ -1,12 +1,20 @@
 import axios from "axios";
 
 export const userModule = {
+  namespaced: true,
   state: () => ({
-    // role: "reader",
-    role: "writer",
+    role: "",
     users: [],
+    check: true,
   }),
-  getters: {},
+  getters: {
+    checkRoleWriter(state) {
+      return state.role === "writer";
+    },
+    checkRoleReader(state) {
+      return state.role === "reader";
+    },
+  },
   mutations: {
     logout(state) {
       state.role = "";
@@ -14,17 +22,12 @@ export const userModule = {
     addUsers(state, users) {
       state.users = users;
     },
-    checkUser(state, userInfo) {
-      const newUser = state.users.find((user) => {
-        if (user.login === userInfo.userEmail) {
-          return user;
-        } else return false;
-      });
-      if (newUser.password === userInfo.userPassword) {
-        state.role = newUser.role;
-        state.userActive = true;
-        return true;
-      } else false;
+    logIn(state, role) {
+      state.role = role;
+      state.check = true;
+    },
+    unCheckUser(state) {
+      state.check = false;
     },
   },
   actions: {
@@ -32,10 +35,18 @@ export const userModule = {
       try {
         const response = await axios.get("http://localhost:3000/users");
         commit("addUsers", response.data);
-      } catch (e) {
-        console.log(e);
+      } catch (error) {
+        console.error(error);
       }
     },
+    searchUser({ commit, state }, userInfo) {
+      const user = state.users.find(
+        (user) =>
+          user.login === userInfo.userEmail &&
+          String(user.password) === userInfo.userPassword
+      );
+      if (user === undefined) return commit("unCheckUser");
+      commit("logIn", user.role);
+    },
   },
-  namespaced: true,
 };

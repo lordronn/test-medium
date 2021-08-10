@@ -1,25 +1,25 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import LoginPage from "@/views/LoginPage.vue";
-import PostPage from "@/views/PostPage.vue";
-import PostsPage from "@/views/PostsPage.vue";
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
     name: "Posts",
-    component: PostsPage,
+    component: () =>
+      import(/* webpackChunkName: "homeRoute" */ "@/views/PostsPage.vue"),
   },
   {
     path: "/login",
     name: "Login",
-    component: LoginPage,
+    component: () =>
+      import(/* webpackChunkName: "loginRoute" */ "@/views/LoginPage.vue"),
   },
   {
     path: "/post",
     name: "Post",
-    component: PostPage,
+    component: () =>
+      import(/* webpackChunkName: "postRoute" */ "@/views/PostPage.vue"),
     props: (route) => ({ editPost: route.params.editPost }),
   },
 

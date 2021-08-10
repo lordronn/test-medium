@@ -7,12 +7,12 @@
       <b-button
         type="is-info"
         icon-left="sign-language"
-        v-if="userRole === 'reader'"
+        v-if="checkRoleReader"
         @click="addClaps(post.id)"
       >
         {{ post.claps }}
       </b-button>
-      <div v-if="userRole === 'writer'" class="info__control">
+      <div v-if="checkRoleWriter" class="info__control">
         <b-button
           tag="router-link"
           :to="{ name: 'Post', params: { editPost: post } }"
@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
+import { mapState, mapMutations, mapGetters } from "vuex";
 export default {
   name: "PostItem",
   props: {
@@ -61,6 +61,10 @@ export default {
     }),
   },
   computed: {
+    ...mapGetters({
+      checkRoleWriter: "user/checkRoleWriter",
+      checkRoleReader: "user/checkRoleReader",
+    }),
     ...mapState({
       userRole: (state) => state.user.role,
     }),

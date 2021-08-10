@@ -32,58 +32,53 @@
           <span>Submit</span>
         </button>
       </div>
-      <b-message v-if="role && loginAttempt" type="is-danger" has-icon>
+      <b-message v-if="!checkUser" type="is-danger" has-icon>
         Wrong login or password!
       </b-message>
     </div>
   </section>
 </template>
 <script>
-import { mapState, mapMutations } from "vuex";
+import { mapState, mapActions } from "vuex";
 
 export default {
   name: "LoginPage",
-  components: {},
   data: () => ({
     email: "",
     password: "",
-    loginAttempt: false,
   }),
+  computed: {
+    ...mapState({
+      role: (state) => state.user.role,
+      checkUser: (state) => state.user.check,
+    }),
+  },
   methods: {
-    ...mapMutations({
-      checkUser: "user/checkUser",
+    ...mapActions({
+      searchUser: "user/searchUser",
     }),
     checkValid() {
       const checkMail = this.$refs.emailValid.checkHtml5Validity();
       const checkPass = this.$refs.passwordValid.checkHtml5Validity();
       return checkMail && checkPass;
     },
-    submit() {
-      if (this.checkValid()) {
-        const userInfo = {
-          userEmail: this.email,
-          userPassword: +this.password,
-        };
-        this.loginAttempt = true;
-        if (this.checkUser(userInfo)) {
-          this.$store.commit("user/checkUser", userInfo);
-          if (this.userActive) {
-            this.resetForm();
-            this.$router.push("/");
-          }
-        }
-      }
-    },
-
     resetForm() {
       this.email = "";
       this.password = "";
     },
-  },
-  computed: {
-    ...mapState({
-      role: (state) => state.user.role,
-    }),
+    submit() {
+      if (this.checkValid()) {
+        const userInfo = {
+          userEmail: this.email,
+          userPassword: String(this.password),
+        };
+        this.searchUser(userInfo);
+        if (this.checkUser) {
+          this.resetForm();
+          this.$router.push({ name: "Posts" });
+        }
+      }
+    },
   },
 };
 </script>

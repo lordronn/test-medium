@@ -1,25 +1,23 @@
 <template>
   <div id="app">
-    <div class="wrapper">
-      <HeaderBlock />
-      <router-view />
-    </div>
+    <CustomHeader />
+    <router-view />
   </div>
 </template>
 
 <script>
-import HeaderBlock from "@/components/HeaderBlock.vue";
+import CustomHeader from "@/components/CustomHeader.vue";
 
 export default {
   name: "App",
   components: {
-    HeaderBlock,
+    CustomHeader,
   },
 };
 </script>
 
 <style lang="scss">
-.wrapper {
+#app {
   height: 100%;
   min-height: 100vh;
   background-color: #ded8d8;

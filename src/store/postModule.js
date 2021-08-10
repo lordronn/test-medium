@@ -2,10 +2,11 @@ import axios from "axios";
 import Vue from "vue";
 
 export const postModule = {
+  namespaced: true,
   state: () => ({
     posts: [],
     postsPerPage: 10,
-    pageNumber: "",
+    pageNumber: 1,
   }),
   getters: {
     getPostList(state) {
@@ -39,12 +40,12 @@ export const postModule = {
     deletePost(state, id) {
       state.posts = state.posts.filter((post) => post.id !== id);
     },
-    chengesNumPage(state, num) {
+    changesNumPage(state, num) {
       state.pageNumber = num;
     },
     addClaps(state, postId) {
       state.posts = state.posts.map((post) =>
-        post.id === postId ? { ...post, claps: ++post.claps } : post
+        post.id === postId ? { ...post, claps: (post.claps += 1) } : post
       );
     },
   },
@@ -54,9 +55,8 @@ export const postModule = {
         const response = await axios.get("http://localhost:3000/posts");
         commit("newPosts", response.data);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     },
   },
-  namespaced: true,
 };

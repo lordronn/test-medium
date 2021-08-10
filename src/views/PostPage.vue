@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
+import { mapMutations } from "vuex";
 
 export default {
   name: "Post-page",
@@ -38,6 +38,7 @@ export default {
       claps: Number,
       updateAt: String,
       type: Object,
+      required: false,
     },
   },
   data() {
@@ -50,7 +51,6 @@ export default {
     };
   },
   methods: {
-    ...mapState({}),
     ...mapMutations({
       savePostInStore: "post/savePost",
       serchPost: "post/serchPost",
@@ -62,15 +62,14 @@ export default {
     },
     savePost() {
       if (this.checkValid()) {
-        this.savePostInStore(this.post, this.checkProps);
-        this.$router.push("/");
+        this.savePostInStore(this.post);
+        this.$router.push({ name: "Posts" });
       }
     },
   },
-  components: {},
-  mounted() {
+  created() {
     if (this.editPost) {
-      this.post = this.editPost;
+      this.post = JSON.parse(JSON.stringify(this.editPost));
       this.post.editing = true;
     }
   },

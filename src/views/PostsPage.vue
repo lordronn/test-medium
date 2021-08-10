@@ -22,17 +22,18 @@ import { mapState, mapGetters, mapMutations } from "vuex";
 
 export default {
   name: "PostsPage",
+  components: {
+    PostItem,
+  },
   data() {
     return {
       pageNumber: 1,
     };
   },
-  components: {
-    PostItem,
-  },
   computed: {
     ...mapState({
       posts: (state) => state.post.posts,
+      pageNum: (state) => state.post.pageNumber,
       postsPerPage: (state) => state.post.postsPerPage,
     }),
     ...mapGetters({
@@ -41,11 +42,14 @@ export default {
   },
   methods: {
     ...mapMutations({
-      chengesNumPage: "post/chengesNumPage",
+      changesNumPage: "post/changesNumPage",
     }),
   },
   beforeUpdate() {
-    this.chengesNumPage(this.pageNumber);
+    this.changesNumPage(this.pageNumber);
+  },
+  beforeMount() {
+    this.pageNumber = this.pageNum;
   },
 };
 </script>
